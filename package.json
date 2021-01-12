@@ -1,13 +1,15 @@
 {
   "name": "server-response-login-page",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "dependencies": {
+    "bcrypt-inzi": "^1.0.7",
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
     "cor": "^0.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongoose": "^5.11.11",
     "morgan": "^1.10.0",
     "package.json": "^2.0.1"
   },
@@ -25,5 +27,6 @@
   "bugs": {
     "url": "https://github.com/skahmerali/server-response-login-page/issues"
   },
-  "homepage": "https://github.com/skahmerali/server-response-login-page#readme"
+  "homepage": "https://github.com/skahmerali/server-response-login-page#readme",
+  "description": ""
 }

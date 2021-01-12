@@ -94,8 +94,8 @@ var morgan = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 var bcrypt = require("bcrypt-inzi")
-var jwt = require('jsonwebtoken');
-
+// var jwt = require('jsonwebtoken');
+var cookieParser = require('cookie-parser')
 
 
 var SERVER_SECRET = process.env.SECRET || "1234";
@@ -137,8 +137,8 @@ var userSchema = new mongoose.Schema({
     "password": String,
     "phone": String,
     "gender": String,
-    "createdOn": { type: Date, 'default': Date.now }, 
-    "activeSince" : Date
+    "createdOn": { type: Date, 'default': Date.now },
+    "activeSince": Date
 });
 var userModel = mongoose.model("users", userSchema);
 
@@ -146,7 +146,11 @@ var userModel = mongoose.model("users", userSchema);
 var app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    credentials: true
+
+}));
 app.use(morgan('dev'));
 
 app.use("/", express.static(path.resolve(path.join(__dirname, "public"))));
@@ -155,11 +159,11 @@ app.use("/", express.static(path.resolve(path.join(__dirname, "public"))));
 app.post("/signup", (req, res, next) => {
 
     if (
-           !req.body.name
+        !req.body.name
         || !req.body.email
         || !req.body.password
         || !req.body.number
-        || !req.body.gender ) {
+        || !req.body.gender) {
 
         res.status(403).send(`
             please send name, email, passwod, phone and gender in json body.
@@ -171,7 +175,7 @@ app.post("/signup", (req, res, next) => {
                 "phone": "03001234567",
                 "gender": "Male"
             }`)
-        console.log("noman khan")
+        console.log("Ahmer Ali")
 
         return;
     }
@@ -190,6 +194,7 @@ app.post("/signup", (req, res, next) => {
 
     userModel.findOne({ email: req.body.email },
         function (err, doc) {
+            console.log(req.body.email)
             if (!err && !doc) {
 
                 bcrypt.stringToHash(req.body.password).then(function (hash) {
@@ -203,7 +208,7 @@ app.post("/signup", (req, res, next) => {
                     })
                     newUser.save((err, data) => {
                         if (!err) {
-                            res.send({
+                            res.status(200).send({
                                 message: "user created"
                             })
                         } else {
@@ -232,13 +237,14 @@ app.post("/login", (req, res, next) => {
 
     if (!req.body.email || !req.body.password) {
 
-        res.status(403).send(`
+      res.status(403).send(`
             please send email and passwod in json body.
             e.g:
             {
                 "email": "malikasinger@gmail.com",
                 "password": "abc",
             }`)
+      
         return;
     }
 
@@ -294,45 +300,45 @@ app.post("/login", (req, res, next) => {
         });
 
 
+});
+//     app.get("/profile", (req, res, next) => {
 
-    app.get("/profile", (req, res, next) => {
+//         if (!req.headers.token) {
+//             res.status(403).send(`
+//                     please provide token in headers.
+//                     e.g:
+//                     {
+//                         "token": "h2345jnfiuwfn23423...kj345352345"
+//                     }`)
+//             return;
+//         }
 
-        if (!req.headers.token) {
-            res.status(403).send(`
-                    please provide token in headers.
-                    e.g:
-                    {
-                        "token": "h2345jnfiuwfn23423...kj345352345"
-                    }`)
-            return;
-        }
+//         var decodedData = jwt.verify(req.headers.token, SERVER_SECRET);
+//         console.log("user: ", decodedData)
 
-        var decodedData = jwt.verify(req.headers.token, SERVER_SECRET);
-        console.log("user: ", decodedData)
+//         userModel.findById(decodedData.id, 'name email phone gender createdOn',
+//             function (err, doc) {
 
-        userModel.findById(decodedData.id, 'name email phone gender createdOn',
-            function (err, doc) {
+//                 if (!err) {
 
-                if (!err) {
+//                     res.send({
+//                         profile: doc
+//                     })
+//                 } else {
+//                     res.status(500).send({
+//                         message: "server error"
+//                     })
+//                 }
 
-                    res.send({
-                        profile: doc
-                    })
-                } else {
-                    res.status(500).send({
-                        message: "server error"
-                    })
-                }
+//             })
 
-            })
-
-    })
-
-
+//     })
 
 
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log("server is running on: ", PORT);
-    })
-})              
+
+// })              
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log("server is running on: ", PORT);
+})
