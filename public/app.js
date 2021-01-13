@@ -32,8 +32,8 @@ function signup() {
             }
             else{jsonRes.message}
         }
-        
         window.location.href = "login.html"
+        
     }
     return false
 }
@@ -41,14 +41,18 @@ function signup() {
 
 
 function userLogin(){
-   var obj ={
-        userEmail:document.getElementById("login-email").value,
-        userPassowrd:document.getElementById("login-password").value
+   var obj = {
+        email: document.getElementById("login-email").value,
+        passowrd: document.getElementById("login-password").value
     }
+    // userEmail= document.getElementById("login-email").value;
+    // userPassowrd= document.getElementById("login-password").value;
+
+    console.log(obj);
     const Http = new XMLHttpRequest();
     Http.open("POST", url + "/login");
     Http.setRequestHeader("Content-Type", "application/json");
-    Http.send(JSON.stringify(obj));
+    Http.send(JSON.stringify(obj))
     Http.onreadystatechange = (e) => {
         if (Http.onreadystate === 4) {
             let jsonRes = json.parse(Http.responseText)
@@ -56,11 +60,12 @@ function userLogin(){
             if (jsonRes===200){
                 alert(jsonRes.message);
                 alert("login succesfully")
-                window.location.href = "profile.html"
             }
             else{
                 alert(jsonRes.message)
+                alert("sorry! invalid Password or Emmail")
             }
+            window.location.href = "profile.html"
         }
         
     }

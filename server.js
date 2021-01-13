@@ -94,8 +94,8 @@ var morgan = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 var bcrypt = require("bcrypt-inzi")
-// var jwt = require('jsonwebtoken');
-var cookieParser = require('cookie-parser')
+var jwt = require('jsonwebtoken');
+// var cookieParser = require('cookie-parser')
 
 
 var SERVER_SECRET = process.env.SECRET || "1234";
@@ -193,7 +193,7 @@ app.post("/signup", (req, res, next) => {
 
 
     userModel.findOne({ email: req.body.email },
-        function (err, doc) {
+        function (err,doc) {
             console.log(req.body.email)
             if (!err && !doc) {
 
@@ -301,38 +301,38 @@ app.post("/login", (req, res, next) => {
 
 
 });
-//     app.get("/profile", (req, res, next) => {
+    app.get("/profile", (req, res, next) => {
 
-//         if (!req.headers.token) {
-//             res.status(403).send(`
-//                     please provide token in headers.
-//                     e.g:
-//                     {
-//                         "token": "h2345jnfiuwfn23423...kj345352345"
-//                     }`)
-//             return;
-//         }
+        if (!req.headers.token) {
+            res.status(403).send(`
+                    please provide token in headers.
+                    e.g:
+                    {
+                        "token": "h2345jnfiuwfn23423...kj345352345"
+                    }`)
+            return;
+        }
 
-//         var decodedData = jwt.verify(req.headers.token, SERVER_SECRET);
-//         console.log("user: ", decodedData)
+        var decodedData = jwt.verify(req.headers.token, SERVER_SECRET);
+        console.log("user: ", decodedData)
 
-//         userModel.findById(decodedData.id, 'name email phone gender createdOn',
-//             function (err, doc) {
+        userModel.findById(decodedData.id, 'name email phone gender createdOn',
+            function (err, doc) {
 
-//                 if (!err) {
+                if (!err) {
 
-//                     res.send({
-//                         profile: doc
-//                     })
-//                 } else {
-//                     res.status(500).send({
-//                         message: "server error"
-//                     })
-//                 }
+                    res.send({
+                        profile: doc
+                    })
+                } else {
+                    res.status(500).send({
+                        message: "server error"
+                    })
+                }
 
-//             })
+            })
 
-//     })
+    })
 
 
 
